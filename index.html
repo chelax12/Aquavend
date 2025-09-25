@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Modern Water Vendo Monitoring Dashboard</title>
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #f8fafc;
+      color: #1f2937;
+      line-height: 1.6;
+      min-height: 100vh;
+      display: block;
+    }
+
+    /* Overlay */
+    .overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 40;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity .3s ease, visibility .3s ease;
+    }
+    .overlay.active { opacity: 1; visibility: visible; }
+
+    /* Sidebar */
+    .sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px; /* Fix the sidebar width */
+  height: 100vh;
+  background: white;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  transform: translateX(0); /* Ensure sidebar is always visible */
+}
+
+    .sidebar.open { transform: translateX(0); }
+
+    .sidebar-header { padding: 24px; border-bottom: 1px solid #e5e7eb; }
+    .sidebar-title {
+      font-size: 20px; font-weight: 700; color: #1f2937;
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .sidebar-nav { padding: 16px; overflow-y: auto; }
+    .nav-item {
+      display: flex; align-items: center; gap: 12px;
+      padding: 12px 16px; margin-bottom: 6px;
+      border-radius: 8px; text-decoration: none; color: #6b7280;
+      font-weight: 500; transition: all .15s ease; cursor: pointer;
+    }
+    .nav-item:hover { background: #f3f4f6; color: #374151; }
+    .nav-item.active { background: #dbeafe; color: #2563eb; border-right: 2px solid #2563eb; }
+
+    /* Mobile menu button */
+    .mobile-menu-btn {
+      position: fixed; top: 16px; left: 16px; z-index: 60;
+      background: #2563eb; color: white; border: none;
+      padding: 8px; border-radius: 8px; cursor: pointer;
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,.1);
+      display: block;
+    }
+
+    /* Main content */
+    .main {
+  padding: 16px;
+  margin-left: 256px; /* Make space for the sidebar */
+}
+   .main-header {
+  display: flex;
+  justify-content: flex-start;  /* Changed from 'between' to 'flex-start' */
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 16px;
+}
+    .main-title { font-size: 28px; font-weight: 700; color: #1f2937; }
+    .last-updated { font-size: 14px; color: #6b7280; }
+
+    /* Cards Grid */
+    .cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); /* Adjust column sizes */
+  gap: 24px;
+  margin-bottom: 32px;
+}
+    .card {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06);
+  border: 1px solid #e5e7eb;
+  margin-bottom: 16px;
+}
+
+    .card:hover { box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+
+    .card-header { display:flex; justify-content: space-between; align-items:center; margin-bottom: 16px; gap: 12px; }
+    .card-title { font-size: 14px; font-weight: 500; color: #6b7280; margin-bottom: 4px; }
+    .card-value { font-size: 24px; font-weight: 700; }
+    .card-subtitle { font-size: 12px; color: #9ca3af; margin-top: 4px; }
+
+    .card-icon { padding: 12px; border-radius: 8px; display:flex; align-items:center; justify-content:center; }
+
+    /* Color variants */
+    .text-blue { color: #2563eb; } .bg-blue { background: #dbeafe; }
+    .text-green { color: #059669; } .bg-green { background: #d1fae5; }
+    .text-purple { color: #7c3aed; } .bg-purple { background: #e9d5ff; }
+    .text-orange { color: #ea580c; } .bg-orange { background: #fed7aa; }
+    .text-cyan { color: #0891b2; } .bg-cyan { background: #cffafe; }
+
+    /* Progress bar */
+    .progress-container { position: relative; width: 100%; height: 24px; background: #e5e7eb; border-radius: 12px; overflow: hidden; margin: 16px 0; }
+    .progress-bar {
+      height: 100%; background: linear-gradient(to right,#3b82f6,#06b6d4);
+      display:flex; align-items:center; justify-content:center; color:white; font-size:12px; font-weight:600;
+      transition: width .4s ease;
+    }
+    .progress-bar.low { background: linear-gradient(to right,#f59e0b,#eab308); }
+    .progress-bar.empty { background: linear-gradient(to right,#ef4444,#dc2626); }
+
+    /* Buttons */
+    .btn { display: inline-flex; align-items:center; gap:8px; padding:8px 16px; border-radius:8px; cursor:pointer; border: none; }
+    .btn-primary { background:#2563eb; color:white; } .btn-primary:hover{background:#1d4ed8;}
+    .btn-secondary { background:#f3f4f6; color:#374151; } .btn-secondary:hover{background:#e5e7eb;}
+    .btn-danger { background:#dc2626; color:white; } .btn-danger:hover{background:#b91c1c;}
+
+    /* Table */
+    .table-container { overflow-x:auto; border-radius: 8px; border: 1px solid #e5e7eb; }
+    table { width:100%; border-collapse: collapse; }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid #e5e7eb; }
+    th { background: #f9fafb; font-weight: 500; color: #6b7280; font-size: 14px; }
+    td { font-size: 14px; }
+
+    /* Alerts */
+    .alert { padding: 16px; border-radius: 8px; border-left: 4px solid; margin: 16px 0; display:flex; gap:12px; align-items:flex-start;}
+    .alert-warning { background:#fef3c7; border-color:#f59e0b; color:#92400e; }
+    .alert-danger { background:#fee2e2; border-color:#ef4444; color:#991b1b; }
+
+    /* Controls and slider */
+   
+    
+
+    /* Sections */
+    .section { display: none; }
+    .section.active { display: block; }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+  
+
+  .mobile-menu-btn {
+    display: block; /* Show the mobile menu button on small screens */
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .main {
+    margin-left: 0; /* Remove the margin for mobile view */
+  }
+}
+
+    @media (max-width: 640px) {
+      .cards-grid { grid-template-columns: 1fr; }
+      .main-header { flex-direction: column; align-items: flex-start; gap: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile menu button -->
+  
+
+  <!-- Overlay -->
+  <div class="overlay" onclick="closeSidebar()"></div>
+
+  <!-- Sidebar -->
+  <aside class="sidebar" id="sidebar" aria-hidden="false">
+    <div class="sidebar-header">
+      <div class="sidebar-title">
+        <i data-lucide="droplets"></i>
+        <span>Water Vendo</span>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav" aria-label="Main navigation">
+      <a class="nav-item active" onclick="showSection('dashboard', this)"><i data-lucide="layout-dashboard"></i> Dashboard</a>
+      <a class="nav-item" onclick="showSection('water', this)"><i data-lucide="droplets"></i> Water Level</a>
+      <a class="nav-item" onclick="showSection('sales', this)"><i data-lucide="coins"></i> Sales Report</a>
+      <a class="nav-item" onclick="showSection('history', this)"><i data-lucide="history"></i> History</a>
+      <a class="nav-item" onclick="showSection('settings', this)"><i data-lucide="settings"></i> Settings</a>
+    </nav>
+  </aside>
+
+  <!-- Main content -->
+  <main class="main" role="main">
+    <!-- Dashboard Section -->
+    <section id="dashboard" class="section active">
+      <header class="main-header">
+        <div>
+          <h1 class="main-title">Dashboard</h1>
+          <div class="last-updated" id="lastUpdated">Last updated: --</div>
+        </div>
+        <div style="align-self:center;">
+          <div style="font-size:14px;color:#6b7280;">Quick stats</div>
+        </div>
+      </header>
+
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">₱1 Coins</div>
+              <div class="card-value text-blue" id="peso1Display">0</div>
+              <div class="card-subtitle">₱<span id="peso1Total">0</span> total</div>
+            </div>
+            <div class="card-icon bg-blue"><i data-lucide="coins" class="text-blue"></i></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">₱5 Coins</div>
+              <div class="card-value text-green" id="peso5Display">0</div>
+              <div class="card-subtitle">₱<span id="peso5Total">0</span> total</div>
+            </div>
+            <div class="card-icon bg-green"><i data-lucide="coins" class="text-green"></i></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">₱10 Coins</div>
+              <div class="card-value text-purple" id="peso10Display">0</div>
+              <div class="card-subtitle">₱<span id="peso10Total">0</span> total</div>
+            </div>
+            <div class="card-icon bg-purple"><i data-lucide="coins" class="text-purple"></i></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Total Earnings</div>
+              <div class="card-value text-orange" id="totalEarningsDisplay">₱0</div>
+              <div class="card-subtitle"><span id="totalCoins">0</span> coins</div>
+            </div>
+            <div class="card-icon bg-orange"><i data-lucide="dollar-sign" class="text-orange"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Water Status</div>
+              <div class="card-value text-cyan" id="waterStatusDisplay">85%</div>
+              <div class="card-subtitle">Tank level</div>
+            </div>
+            <div class="card-icon bg-cyan"><i data-lucide="droplets" class="text-cyan"></i></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">System Alerts</div>
+              <div class="card-value text-green">0</div>
+              <div class="card-subtitle">All systems operational</div>
+            </div>
+            <div class="card-icon bg-green"><i data-lucide="check-circle" class="text-green"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin-bottom:16px;color:#1f2937;">Quick Actions</h3>
+        <div class="controls">
+          <button class="btn btn-primary" onclick="resetCounters()"><i data-lucide="refresh-cw"></i> Reset Counters</button>
+          <button class="btn btn-secondary"><i data-lucide="download"></i> Export Data</button>
+          <button class="btn btn-secondary"><i data-lucide="file-text"></i> View Reports</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Water Level Section -->
+    <section id="water" class="section" aria-labelledby="water-heading">
+      <header class="main-header">
+        <h1 class="main-title">Water Level Monitoring</h1>
+      </header>
+
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-header">
+            <h3 style="color:#1f2937;">Tank Status</h3>
+            <i data-lucide="check-circle" class="text-green" id="waterStatusIcon"></i>
+          </div>
+
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+              <span style="font-size:14px;color:#6b7280;">Current Level</span>
+              <span class="text-cyan" style="font-size:24px;font-weight:700;" id="waterLevelDisplay">85%</span>
+            </div>
+
+            <div class="progress-container">
+              <div class="progress-bar" id="waterProgressBar" style="width:85%;">85%</div>
+            </div>
+
+            <div style="text-align:center;margin-top:8px;">
+              <span style="font-size:14px;font-weight:500;color:#059669;" id="waterStatusText">Status: normal</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 style="color:#1f2937;margin-bottom:16px;">Simulation Controls</h3>
+          <label style="display:block;font-size:14px;font-weight:500;color:#374151;margin-bottom:8px;">
+            Set Water Level: <span id="sliderValue">85</span>%
+          </label>
+          <input type="range" min="0" max="100" value="85" class="slider" id="waterSlider" oninput="updateWaterLevel(this.value)"/>
+          <div class="controls">
+            <button class="btn btn-primary" onclick="setWaterLevel(100)">Full Tank</button>
+            <button class="btn btn-secondary" onclick="setWaterLevel(50)">Half Tank</button>
+            <button class="btn btn-secondary" onclick="setWaterLevel(20)">Low Level</button>
+            <button class="btn btn-danger" onclick="setWaterLevel(0)">Empty</button>
+          </div>
+        </div>
+      </div>
+
+      <div id="waterAlert"></div>
+    </section>
+
+    <!-- Sales Report Section -->
+    <section id="sales" class="section">
+      <header class="main-header">
+        <h1 class="main-title">Sales Report</h1>
+        <div class="controls">
+          <button class="btn btn-primary"><i data-lucide="download"></i> Export</button>
+          <button class="btn btn-danger" onclick="resetCounters()"><i data-lucide="refresh-cw"></i> Reset</button>
+        </div>
+      </header>
+
+      <div class="cards-grid">
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Daily Total</div>
+              <div class="card-value text-blue" id="dailyTotal">₱0</div>
+            </div>
+            <div class="card-icon bg-blue"><i data-lucide="bar-chart-3" class="text-blue"></i></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Weekly Total</div>
+              <div class="card-value text-green" id="weeklyTotal">₱0</div>
+            </div>
+            <div class="card-icon bg-green"><i data-lucide="bar-chart-3" class="text-green"></i></div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Monthly Total</div>
+              <div class="card-value text-purple" id="monthlyTotal">₱0</div>
+            </div>
+            <div class="card-icon bg-purple"><i data-lucide="bar-chart-3" class="text-purple"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div style="padding-bottom:16px;border-bottom:1px solid #e5e7eb;margin-bottom:16px;">
+          <h3 style="color:#1f2937;">Coin Breakdown</h3>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Denomination</th>
+                <th style="text-align:right;">Count</th>
+                <th style="text-align:right;">Value</th>
+                <th style="text-align:right;">Percentage</th>
+              </tr>
+            </thead>
+            <tbody id="salesBreakdown">
+              <tr><td style="font-weight:500;">₱1 Coins</td><td style="text-align:right;" id="sales1Count">0</td><td style="text-align:right;" id="sales1Value">₱0</td><td style="text-align:right;" id="sales1Percent">0%</td></tr>
+              <tr><td style="font-weight:500;">₱5 Coins</td><td style="text-align:right;" id="sales5Count">0</td><td style="text-align:right;" id="sales5Value">₱0</td><td style="text-align:right;" id="sales5Percent">0%</td></tr>
+              <tr><td style="font-weight:500;">₱10 Coins</td><td style="text-align:right;" id="sales10Count">0</td><td style="text-align:right;" id="sales10Value">₱0</td><td style="text-align:right;" id="sales10Percent">0%</td></tr>
+              <tr style="background:#f9fafb;font-weight:600;">
+                <td>Total</td>
+                <td style="text-align:right;" id="salesTotalCount">0</td>
+                <td style="text-align:right;" id="salesTotalValue">₱0</td>
+                <td style="text-align:right;">100%</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- History Section -->
+    <section id="history" class="section">
+      <header class="main-header">
+        <h1 class="main-title">Transaction History</h1>
+        <div><button class="btn btn-danger" onclick="clearHistory()"><i data-lucide="trash-2"></i> Clear History</button></div>
+      </header>
+
+      <div class="card">
+        <div class="table-container" id="historyContainer">
+          <div style="padding:48px;text-align:center;" id="emptyHistory">
+            <i data-lucide="calendar" style="width:48px;height:48px;color:#9ca3af;margin-bottom:16px;"></i>
+            <h3 style="color:#1f2937;margin-bottom:8px;">No Transaction History</h3>
+            <p style="color:#6b7280;">Transaction history will appear here after you reset counters.</p>
+          </div>
+
+          <table id="historyTable" style="display:none;">
+            <thead>
+              <tr><th>Date & Time</th><th style="text-align:right;">₱1 Coins</th><th style="text-align:right;">₱5 Coins</th><th style="text-align:right;">₱10 Coins</th><th style="text-align:right;">Total Earnings</th></tr>
+            </thead>
+            <tbody id="historyTableBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- Settings Section -->
+    <section id="settings" class="section">
+      <header class="main-header"><h1 class="main-title">Settings</h1></header>
+      <div class="cards-grid">
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <div class="card-icon bg-blue"><i data-lucide="settings" class="text-blue"></i></div>
+            
+          </div>
+          <div>
+           
+            </select>
+          </div>
+        </div>
+
+        <div class="card">
+          <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+            <div class="card-icon bg-green"><i data-lucide="bell" class="text-green"></i></div>
+            <h3 style="color:#1f2937;">Notifications</h3>
+          </div>
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <label>Low Water Level Alerts</label>
+              <input type="checkbox" checked />
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <label>Daily Sales Reports</label>
+              <input type="checkbox" checked />
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+              <label>System Maintenance Alerts</label>
+              <input type="checkbox" />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background:#dbeafe;border:1px solid #93c5fd;border-radius:12px;padding:16px;margin-top:24px;">
+        <p style="color:#1e40af;font-size:14px;"><strong>Note:</strong> Settings will be implemented in future updates.</p>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // DOM ready
+    document.addEventListener('DOMContentLoaded', function() {
+      lucide.createIcons();
+      init();
+      // simulate small random updates (optional)
+      setInterval(simulateRandomInserts, 2000);
+      setInterval(updateLastUpdated, 1000);
+    });
+
+    // State
+    let peso1 = 0, peso5 = 0, peso10 = 0;
+    let waterLevel = 85;
+
+    function init() {
+      updateDisplay();
+      loadHistory();
+      setWaterLevel(waterLevel);
+    }
+
+    function simulateRandomInserts() {
+      // small chance to simulate hardware coin insert (for demo)
+      if (Math.random() > 0.92) {
+        peso1 += Math.floor(Math.random() * 2);
+        peso5 += Math.floor(Math.random() * 1);
+        peso10 += 0;
+        updateDisplay();
+      }
+    }
+
+    // Sidebar behavior
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.querySelector('.overlay');
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('active');
+    }
+    function closeSidebar() {
+      document.getElementById('sidebar').classList.remove('open');
+      document.querySelector('.overlay').classList.remove('active');
+    }
+
+    // Navigation
+    function showSection(sectionId, element) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.getElementById(sectionId).classList.add('active');
+      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+      if (element) element.classList.add('active');
+      closeSidebar();
+      lucide.createIcons();
+    }
+
+    // Display updates
+    function updateDisplay() {
+      const totalEarnings = peso1*1 + peso5*5 + peso10*10;
+      const totalCoins = peso1 + peso5 + peso10;
+
+      document.getElementById('peso1Display').textContent = peso1;
+      document.getElementById('peso5Display').textContent = peso5;
+      document.getElementById('peso10Display').textContent = peso10;
+      document.getElementById('peso1Total').textContent = peso1 * 1;
+      document.getElementById('peso5Total').textContent = peso5 * 5;
+      document.getElementById('peso10Total').textContent = peso10 * 10;
+      document.getElementById('totalEarningsDisplay').textContent = '₱' + totalEarnings;
+      document.getElementById('totalCoins').textContent = totalCoins;
+
+      document.getElementById('dailyTotal').textContent = '₱' + totalEarnings;
+      document.getElementById('weeklyTotal').textContent = '₱' + (totalEarnings * 7);
+      document.getElementById('monthlyTotal').textContent = '₱' + (totalEarnings * 30);
+
+      document.getElementById('sales1Count').textContent = peso1;
+      document.getElementById('sales5Count').textContent = peso5;
+      document.getElementById('sales10Count').textContent = peso10;
+      document.getElementById('sales1Value').textContent = '₱' + (peso1 * 1);
+      document.getElementById('sales5Value').textContent = '₱' + (peso5 * 5);
+      document.getElementById('sales10Value').textContent = '₱' + (peso10 * 10);
+      document.getElementById('sales1Percent').textContent = totalEarnings > 0 ? Math.round((peso1 * 1 / totalEarnings) * 100) + '%' : '0%';
+      document.getElementById('sales5Percent').textContent = totalEarnings > 0 ? Math.round((peso5 * 5 / totalEarnings) * 100) + '%' : '0%';
+      document.getElementById('sales10Percent').textContent = totalEarnings > 0 ? Math.round((peso10 * 10 / totalEarnings) * 100) + '%' : '0%';
+      document.getElementById('salesTotalCount').textContent = totalCoins;
+      document.getElementById('salesTotalValue').textContent = '₱' + totalEarnings;
+    }
+
+    // Water level functions
+    function updateWaterLevel(value) {
+      waterLevel = parseInt(value, 10);
+      document.getElementById('sliderValue').textContent = waterLevel;
+      setWaterLevel(waterLevel);
+    }
+
+    function setWaterLevel(level) {
+      waterLevel = level;
+      const progressBar = document.getElementById('waterProgressBar');
+      const levelDisplay = document.getElementById('waterLevelDisplay');
+      const statusText = document.getElementById('waterStatusText');
+      const statusIcon = document.getElementById('waterStatusIcon');
+      const slider = document.getElementById('waterSlider');
+      const alertContainer = document.getElementById('waterAlert');
+
+      progressBar.style.width = level + '%';
+      progressBar.textContent = level + '%';
+      levelDisplay.textContent = level + '%';
+      if (slider) slider.value = level;
+      document.getElementById('sliderValue').textContent = level;
+
+      let status, statusClass, iconName;
+      if (level > 30) {
+        status = 'normal'; statusClass = 'text-green'; iconName = 'check-circle';
+        progressBar.className = 'progress-bar';
+      } else if (level > 10) {
+        status = 'low'; statusClass = 'text-orange'; iconName = 'alert-triangle';
+        progressBar.className = 'progress-bar low';
+      } else {
+        status = 'empty'; statusClass = 'text-red'; iconName = 'alert-triangle';
+        progressBar.className = 'progress-bar empty';
+      }
+
+      statusText.textContent = 'Status: ' + status;
+      statusText.className = statusClass;
+      levelDisplay.className = 'card-value ' + statusClass;
+
+      statusIcon.setAttribute('data-lucide', iconName);
+      statusIcon.className = statusClass;
+      lucide.createIcons();
+
+      if (status !== 'normal') {
+        const alertClass = status === 'low' ? 'alert-warning' : 'alert-danger';
+        const alertTitle = status === 'low' ? 'Low Water Level Warning' : 'Critical: Empty Tank';
+        const alertMessage = status === 'low'
+          ? 'Water level is below 30%. Consider refilling soon.'
+          : 'Tank is empty or critically low. Immediate attention required.';
+
+        alertContainer.innerHTML = `
+          <div class="alert ${alertClass}">
+            <i data-lucide="alert-triangle"></i>
+            <div>
+              <h4 style="font-weight:500;margin-bottom:4px;">${alertTitle}</h4>
+              <p style="font-size:14px;">${alertMessage}</p>
+            </div>
+          </div>`;
+        lucide.createIcons();
+      } else {
+        alertContainer.innerHTML = '';
+      }
+    }
+
+    // Reset counters and history
+    function resetCounters() {
+      const totalEarnings = peso1*1 + peso5*5 + peso10*10;
+      if (totalEarnings > 0) {
+        if (confirm('Are you sure you want to reset all counters?')) {
+          let history = JSON.parse(localStorage.getItem('waterVendoHistory') || '[]');
+          history.push({ date: new Date().toLocaleString(), peso1, peso5, peso10, total: totalEarnings });
+          localStorage.setItem('waterVendoHistory', JSON.stringify(history));
+          peso1 = peso5 = peso10 = 0;
+          updateDisplay();
+          loadHistory();
+        }
+      } else {
+        alert('No earnings to reset.');
+      }
+    }
+
+    function loadHistory() {
+      const history = JSON.parse(localStorage.getItem('waterVendoHistory') || '[]');
+      const emptyHistory = document.getElementById('emptyHistory');
+      const historyTable = document.getElementById('historyTable');
+      const historyTableBody = document.getElementById('historyTableBody');
+
+      if (history.length > 0) {
+        emptyHistory.style.display = 'none';
+        historyTable.style.display = 'table';
+        historyTableBody.innerHTML = '';
+        history.forEach(entry => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td><i data-lucide="calendar" style="width:16px;height:16px;color:#9ca3af;margin-right:8px;"></i>${entry.date}</td>
+            <td style="text-align:right;">${entry.peso1}</td>
+            <td style="text-align:right;">${entry.peso5}</td>
+            <td style="text-align:right;">${entry.peso10}</td>
+            <td style="text-align:right;color:#059669;font-weight:500;">₱${entry.total}</td>
+          `;
+          historyTableBody.appendChild(row);
+        });
+        lucide.createIcons();
+      } else {
+        emptyHistory.style.display = 'block';
+        historyTable.style.display = 'none';
+      }
+    }
+
+    function clearHistory() {
+      if (confirm('Are you sure you want to clear all history?')) {
+        localStorage.removeItem('waterVendoHistory');
+        loadHistory();
+      }
+    }
+
+    // Last updated
+    function updateLastUpdated() {
+      document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+    }
+  </script>
+</body>
+</html>
