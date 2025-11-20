@@ -18,202 +18,177 @@
       overflow-x: hidden;
     }
 
-    /* Authentication Panel Styles */
-    .auth-container {
-      position: fixed;
-      inset: 0;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
+    /* Authentication Panel Styles (Updated for Gmail-Only Auth) */
+.auth-container {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
 
-    .auth-container.hidden {
-      display: none;
-    }
+.auth-container.hidden {
+  display: none;
+}
 
-    .auth-panel {
-      background: white;
-      border-radius: 16px;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      padding: 40px;
-      width: 100%;
-      max-width: 420px;
-      position: relative;
-    }
+.auth-panel {
+  background: white;
+  border-radius: 16px;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  padding: 40px;
+  width: 100%;
+  max-width: 420px;
+  position: relative;
+}
 
-    .auth-header {
-      text-align: center;
-      margin-bottom: 32px;
-    }
+.auth-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
 
-    .auth-logo {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 16px;
-    }
+.auth-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 8px;
+}
 
-    .auth-logo i {
-      width: 32px;
-      height: 32px;
-      color: #2563eb;
-    }
+.auth-subtitle {
+  font-size: 15px;
+  color: #6b7280;
+  margin-bottom: 20px;
+}
 
-    .auth-title {
-      font-size: 28px;
-      font-weight: 700;
-      color: #1f2937;
-      margin-bottom: 8px;
-    }
+.auth-tabs {
+  display: flex;
+  background: #f3f4f6;
+  border-radius: 12px;
+  padding: 4px;
+  margin-bottom: 32px;
+}
 
-    .auth-subtitle {
-      font-size: 16px;
-      color: #6b7280;
-    }
+.auth-tab {
+  flex: 1;
+  padding: 12px 16px;
+  text-align: center;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 14px;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  border: none;
+  background: transparent;
+}
 
-    .auth-tabs {
-      display: flex;
-      background: #f3f4f6;
-      border-radius: 12px;
-      padding: 4px;
-      margin-bottom: 32px;
-    }
+.auth-tab.active {
+  background: white;
+  color: #2563eb;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+.auth-container.hidden {
+  display: none !important;
+}
+.auth-form {
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+}
 
-    .auth-tab {
-      flex: 1;
-      padding: 12px 16px;
-      text-align: center;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 500;
-      font-size: 14px;
-      color: #6b7280;
-      transition: all 0.2s ease;
-      border: none;
-      background: transparent;
-    }
+.auth-form.active {
+  display: flex;
+}
 
-    .auth-tab.active {
-      background: white;
-      color: #2563eb;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    }
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
 
-    .auth-form {
-      display: none;
-    }
+.form-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
 
-    .auth-form.active {
-      display: block;
-    }
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 15px;
+  transition: 0.2s ease;
+}
 
-    .form-group {
-      margin-bottom: 20px;
-    }
+.form-input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  outline: none;
+}
 
-    .form-label {
-      display: block;
-      font-size: 14px;
-      font-weight: 500;
-      color: #374151;
-      margin-bottom: 8px;
-    }
+.auth-button {
+  width: 100%;
+  padding: 12px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
 
-    .form-input {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 16px;
-      transition: border-color 0.2s ease, box-shadow 0.2s ease;
-      background: white;
-    }
+.auth-button:hover {
+  background: #1d4ed8;
+}
 
-    .form-input:focus {
-      outline: none;
-      border-color: #2563eb;
-      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-    }
+.auth-error {
+  background: #fee2e2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-    .form-input.error {
-      border-color: #ef4444;
-    }
+.auth-success {
+  background: #d1fae5;
+  border: 1px solid #a7f3d0;
+  color: #065f46;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-    .auth-button {
-      width: 100%;
-      padding: 12px 16px;
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background-color 0.2s ease;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-    }
+.auth-link {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 14px;
+  color: #6b7280;
+}
 
-    .auth-button:hover {
-      background: #1d4ed8;
-    }
+.auth-link button {
+  background: none;
+  border: none;
+  color: #2563eb;
+  cursor: pointer;
+  text-decoration: underline;
+  font-size: 14px;
+}
+.auth-link button:hover {
+  color: #1d4ed8;
+}
 
-    .auth-button:disabled {
-      background: #9ca3af;
-      cursor: not-allowed;
-    }
-
-    .auth-error {
-      background: #fee2e2;
-      border: 1px solid #fecaca;
-      color: #991b1b;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .auth-success {
-      background: #d1fae5;
-      border: 1px solid #a7f3d0;
-      color: #065f46;
-      padding: 12px 16px;
-      border-radius: 8px;
-      font-size: 14px;
-      margin-bottom: 20px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .auth-link {
-      text-align: center;
-      margin-top: 20px;
-      font-size: 14px;
-      color: #6b7280;
-    }
-
-    .auth-link button {
-      background: none;
-      border: none;
-      color: #2563eb;
-      cursor: pointer;
-      text-decoration: underline;
-      font-size: 14px;
-    }
-
-    .auth-link button:hover {
-      color: #1d4ed8;
-    }
 
     /* Main Dashboard Container */
     .dashboard-container {
@@ -633,92 +608,44 @@
         <button class="auth-tab" onclick="switchAuthTab('forgot')">Forgot Password</button>
       </div>
 
-      <!-- Login Form -->
-      <form class="auth-form active" id="loginForm" onsubmit="handleLogin(event)">
-        <div id="loginError" class="auth-error" style="display: none;">
-          <i data-lucide="alert-circle"></i>
-          <span></span>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="loginUsername">Username</label>
-          <input type="text" id="loginUsername" class="form-input" required>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="loginPassword">Password</label>
-          <input type="password" id="loginPassword" class="form-input" required>
-        </div>
-        
-        <button type="submit" class="auth-button">
-          <i data-lucide="log-in"></i>
-          Login
-        </button>
-      </form>
-
-      <!-- Register Form -->
-      <form class="auth-form" id="registerForm" onsubmit="handleRegister(event)">
-        <div id="registerError" class="auth-error" style="display: none;">
-          <i data-lucide="alert-circle"></i>
-          <span></span>
-        </div>
-        
-        <div id="registerSuccess" class="auth-success" style="display: none;">
-          <i data-lucide="check-circle"></i>
-          <span></span>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="registerUsername">Username</label>
-          <input type="text" id="registerUsername" class="form-input" required>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="registerPassword">Password</label>
-          <input type="password" id="registerPassword" class="form-input" required>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="confirmPassword">Confirm Password</label>
-          <input type="password" id="confirmPassword" class="form-input" required>
-        </div>
-        
-        <button type="submit" class="auth-button">
-          <i data-lucide="user-plus"></i>
-          Create Account
-        </button>
-      </form>
-
-      <!-- Forgot Password Form -->
-      <form class="auth-form" id="forgotForm" onsubmit="handleForgotPassword(event)">
-        <div id="forgotError" class="auth-error" style="display: none;">
-          <i data-lucide="alert-circle"></i>
-          <span></span>
-        </div>
-        
-        <div id="forgotSuccess" class="auth-success" style="display: none;">
-          <i data-lucide="check-circle"></i>
-          <span></span>
-        </div>
-        
-        <div class="form-group">
-          <label class="form-label" for="forgotUsername">Username</label>
-          <input type="text" id="forgotUsername" class="form-input" required>
-        </div>
-        
-        <div class="form-group" id="newPasswordGroup" style="display: none;">
-          <label class="form-label" for="newPassword">New Password</label>
-          <input type="password" id="newPassword" class="form-input">
-        </div>
-        
-        <button type="submit" class="auth-button" id="forgotButton">
-          <i data-lucide="key"></i>
-          Reset Password
-        </button>
-      </form>
-    </div>
+     <!-- Authentication Forms -->
+<form id="loginForm" class="auth-form active" onsubmit="handleLogin(event)">
+  <div class="form-group">
+    <label class="form-label" for="loginEmail">Gmail Address</label>
+    <input type="email" id="loginEmail" class="form-input" placeholder="name@gmail.com" required />
   </div>
+  <div class="form-group">
+    <label class="form-label" for="loginPassword">Password</label>
+    <input type="password" id="loginPassword" class="form-input" placeholder="Enter password" required />
+  </div>
+  <button type="submit" class="auth-button">Login</button>
+</form>
 
+<form id="registerForm" class="auth-form" onsubmit="handleRegister(event)">
+  <div class="form-group">
+    <label class="form-label" for="registerEmail">Gmail Address</label>
+    <input type="email" id="registerEmail" class="form-input" placeholder="name@gmail.com" required />
+  </div>
+  <div class="form-group">
+    <label class="form-label" for="registerPassword">Password</label>
+    <input type="password" id="registerPassword" class="form-input" placeholder="Min 6 characters" required />
+  </div>
+  <div class="form-group">
+    <label class="form-label" for="confirmPassword">Confirm Password</label>
+    <input type="password" id="confirmPassword" class="form-input" placeholder="Re-enter password" required />
+  </div>
+  <button type="submit" class="auth-button">Create Account</button>
+</form>
+
+<form id="forgotForm" class="auth-form" onsubmit="handleForgotPassword(event)">
+  <div class="form-group">
+    <label class="form-label" for="forgotEmail">Gmail Address</label>
+    <input type="email" id="forgotEmail" class="form-input" placeholder="name@gmail.com" required />
+  </div>
+  <button type="submit" class="auth-button">Send Reset Link</button>
+</form>
+</div>
+</div>
   <!-- Dashboard Container -->
   <div class="dashboard-container" id="dashboardContainer">
     <!-- Logout Button -->
@@ -1031,382 +958,406 @@
     </main>
   </div>
 
-  <script>
-    // Authentication System
-    let currentUser = null;
-    let forgotPasswordStep = 1;
+ <!-- ✅ Firebase v8 SDKs -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-    // Check if user is already logged in
-    document.addEventListener('DOMContentLoaded', function() {
-      const savedUser = localStorage.getItem('currentUser');
-      if (savedUser) {
-        currentUser = savedUser;
-        showDashboard();
-      }
-      
-      lucide.createIcons();
-      init();
-      setInterval(simulateRandomInserts, 2000);
-      setInterval(updateLastUpdated, 1000);
+<script>
+/* ------------------------------------------------------------------
+   Firebase Configuration & Initialization
+------------------------------------------------------------------ */
+const firebaseConfig = {
+  apiKey: "AIzaSyB1k4lZtq2ocuawaXzoN49GXkIJuzjZx2g",
+  authDomain: "watervendo-1c55d.firebaseapp.com",
+  databaseURL: "https://watervendo-1c55d-default-rtdb.firebaseio.com",
+  projectId: "watervendo-1c55d",
+  storageBucket: "watervendo-1c55d.appspot.com",
+  messagingSenderId: "596510052097",
+  appId: "1:596510052097:web:d3febf48f3a1b101119500",
+  measurementId: "G-Y74371CWFX"
+};
+firebase.initializeApp(firebaseConfig);
+
+// === LIVE DATA BINDINGS ===
+const machineId = 'vendo1';        // <-- set your machine id here
+const db = firebase.database();
+
+firebase.auth().onAuthStateChanged(user => {
+  if (user && user.emailVerified) {
+    // show the app
+    document.getElementById('authContainer').classList.add('hidden');
+    document.getElementById('dashboardContainer').classList.add('visible');
+
+    // Listen for water level
+    db.ref(`machines/${machineId}/waterLevel`).on('value', snap => {
+      const level = snap.val() ?? 0;
+      setWaterLevel(Number(level));
     });
 
-    // Authentication Functions
-    function switchAuthTab(tab) {
-      // Update tab buttons
-      document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-      event.target.classList.add('active');
-      
-      // Update forms
-      document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-      document.getElementById(tab + 'Form').classList.add('active');
-      
-      // Clear any error messages
-      clearAuthMessages();
-      
-      // Reset forgot password form
-      if (tab !== 'forgot') {
-        forgotPasswordStep = 1;
-        document.getElementById('newPasswordGroup').style.display = 'none';
-        document.getElementById('forgotButton').innerHTML = '<i data-lucide="key"></i> Reset Password';
-      }
-      
-      lucide.createIcons();
-    }
-
-    function handleLogin(event) {
-      event.preventDefault();
-      const username = document.getElementById('loginUsername').value;
-      const password = document.getElementById('loginPassword').value;
-      
-      const users = JSON.parse(localStorage.getItem('waterVendoUsers') || '{}');
-      
-      if (users[username] && users[username] === password) {
-        currentUser = username;
-        localStorage.setItem('currentUser', username);
-        showDashboard();
-      } else {
-        showAuthError('loginError', 'Invalid username or password');
-      }
-    }
-
-    function handleRegister(event) {
-      event.preventDefault();
-      const username = document.getElementById('registerUsername').value;
-      const password = document.getElementById('registerPassword').value;
-      const confirmPassword = document.getElementById('confirmPassword').value;
-      
-      if (password !== confirmPassword) {
-        showAuthError('registerError', 'Passwords do not match');
-        return;
-      }
-      
-      if (password.length < 4) {
-        showAuthError('registerError', 'Password must be at least 4 characters long');
-        return;
-      }
-      
-      const users = JSON.parse(localStorage.getItem('waterVendoUsers') || '{}');
-      
-      if (users[username]) {
-        showAuthError('registerError', 'Username already exists');
-        return;
-      }
-      
-      users[username] = password;
-      localStorage.setItem('waterVendoUsers', JSON.stringify(users));
-      
-      showAuthSuccess('registerSuccess', 'Account created successfully! You can now login.');
-      
-      // Clear form
-      document.getElementById('registerForm').reset();
-      
-      // Switch to login tab after 2 seconds
-      setTimeout(() => {
-        switchAuthTab('login');
-        document.querySelector('.auth-tab').click();
-      }, 2000);
-    }
-
-    function handleForgotPassword(event) {
-      event.preventDefault();
-      const username = document.getElementById('forgotUsername').value;
-      const users = JSON.parse(localStorage.getItem('waterVendoUsers') || '{}');
-      
-      if (forgotPasswordStep === 1) {
-        if (!users[username]) {
-          showAuthError('forgotError', 'Username not found');
-          return;
-        }
-        
-        // Show new password field
-        document.getElementById('newPasswordGroup').style.display = 'block';
-        document.getElementById('forgotButton').innerHTML = '<i data-lucide="save"></i> Update Password';
-        forgotPasswordStep = 2;
-        clearAuthMessages();
-        lucide.createIcons();
-      } else {
-        const newPassword = document.getElementById('newPassword').value;
-        
-        if (newPassword.length < 4) {
-          showAuthError('forgotError', 'Password must be at least 4 characters long');
-          return;
-        }
-        
-        users[username] = newPassword;
-        localStorage.setItem('waterVendoUsers', JSON.stringify(users));
-        
-        showAuthSuccess('forgotSuccess', 'Password updated successfully! You can now login.');
-        
-        // Reset form
-        document.getElementById('forgotForm').reset();
-        document.getElementById('newPasswordGroup').style.display = 'none';
-        document.getElementById('forgotButton').innerHTML = '<i data-lucide="key"></i> Reset Password';
-        forgotPasswordStep = 1;
-        
-        // Switch to login tab after 2 seconds
-        setTimeout(() => {
-          switchAuthTab('login');
-          document.querySelector('.auth-tab').click();
-        }, 2000);
-      }
-    }
-
-    function showAuthError(elementId, message) {
-      const errorElement = document.getElementById(elementId);
-      errorElement.querySelector('span').textContent = message;
-      errorElement.style.display = 'flex';
-      lucide.createIcons();
-    }
-
-    function showAuthSuccess(elementId, message) {
-      const successElement = document.getElementById(elementId);
-      successElement.querySelector('span').textContent = message;
-      successElement.style.display = 'flex';
-      lucide.createIcons();
-    }
-
-    function clearAuthMessages() {
-      document.querySelectorAll('.auth-error, .auth-success').forEach(el => {
-        el.style.display = 'none';
-      });
-    }
-
-    function showDashboard() {
-      document.getElementById('authContainer').classList.add('hidden');
-      document.getElementById('dashboardContainer').classList.add('visible');
-    }
-
-    function logout() {
-      if (confirm('Are you sure you want to logout?')) {
-        currentUser = null;
-        localStorage.removeItem('currentUser');
-        document.getElementById('authContainer').classList.remove('hidden');
-        document.getElementById('dashboardContainer').classList.remove('visible');
-        
-        // Clear forms
-        document.querySelectorAll('.auth-form').forEach(form => form.reset());
-        clearAuthMessages();
-        
-        // Reset to login tab
-        switchAuthTab('login');
-        document.querySelector('.auth-tab').click();
-      }
-    }
-
-    // Dashboard State
-    let peso1 = 0, peso5 = 0, peso10 = 0;
-    let waterLevel = 85;
-
-    function init() {
+    // Listen for coins: expect { p1, p5, p10 }
+    db.ref(`machines/${machineId}/coins`).on('value', snap => {
+      const c = snap.val() || {};
+      peso1 = Number(c.p1 || 0);
+      peso5 = Number(c.p5 || 0);
+      peso10 = Number(c.p10 || 0);
       updateDisplay();
-      loadHistory();
-      setWaterLevel(waterLevel);
-    }
+    });
+  } else {
+    // show auth
+    document.getElementById('authContainer').classList.remove('hidden');
+    document.getElementById('dashboardContainer').classList.remove('visible');
+  }
+});
 
-    function simulateRandomInserts() {
-      if (currentUser && Math.random() > 0.92) {
-        peso1 += Math.floor(Math.random() * 2);
-        peso5 += Math.floor(Math.random() * 1);
-        peso10 += 0;
-        updateDisplay();
-      }
-    }
+/* ------------------------------------------------------------------
+   Authentication System
+------------------------------------------------------------------ */
+let currentUser = null;
+let forgotPasswordStep = 1;
 
-    // Sidebar behavior
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.querySelector('.overlay');
-      sidebar.classList.toggle('open');
-      overlay.classList.toggle('active');
-    }
-    
-    function closeSidebar() {
-      document.getElementById('sidebar').classList.remove('open');
-      document.querySelector('.overlay').classList.remove('active');
-    }
+document.addEventListener('DOMContentLoaded', function() {
+  const savedUser = localStorage.getItem('currentUser');
+  if (savedUser) {
+    currentUser = savedUser;
+    showDashboard();
+  }
+  lucide.createIcons();
+  init();
 
-    // Navigation
-    function showSection(sectionId, element) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.getElementById(sectionId).classList.add('active');
-      document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-      if (element) element.classList.add('active');
-      closeSidebar();
-      lucide.createIcons();
-    }
+  // ❌ REMOVE these simulation timers
+  // setInterval(simulateRandomInserts, 2000);
+  // setInterval(updateLastUpdated, 1000);
 
-    // Display updates
-    function updateDisplay() {
-      const totalEarnings = peso1*1 + peso5*5 + peso10*10;
-      const totalCoins = peso1 + peso5 + peso10;
+  // ✅ Keep this — it updates the “Last updated” clock
+  setInterval(updateLastUpdated, 1000);
+});
 
-      document.getElementById('peso1Display').textContent = peso1;
-      document.getElementById('peso5Display').textContent = peso5;
-      document.getElementById('peso10Display').textContent = peso10;
-      document.getElementById('peso1Total').textContent = peso1 * 1;
-      document.getElementById('peso5Total').textContent = peso5 * 5;
-      document.getElementById('peso10Total').textContent = peso10 * 10;
-      document.getElementById('totalEarningsDisplay').textContent = '₱' + totalEarnings;
-      document.getElementById('totalCoins').textContent = totalCoins;
+/* ------------------------------------------------------------------
+   Auth Functions (Firebase-based)
+------------------------------------------------------------------ */
+function handleRegister(event) {
+  event.preventDefault();
+  const email = document.getElementById('registerEmail').value;
+  const password = document.getElementById('registerPassword').value;
+  const confirmPassword = document.getElementById('confirmPassword').value;
 
-      document.getElementById('dailyTotal').textContent = '₱' + totalEarnings;
-      document.getElementById('weeklyTotal').textContent = '₱' + (totalEarnings * 7);
-      document.getElementById('monthlyTotal').textContent = '₱' + (totalEarnings * 30);
+  if (!email.endsWith('@gmail.com')) {
+    alert('Only Gmail accounts are allowed.');
+    return;
+  }
 
-      document.getElementById('sales1Count').textContent = peso1;
-      document.getElementById('sales5Count').textContent = peso5;
-      document.getElementById('sales10Count').textContent = peso10;
-      document.getElementById('sales1Value').textContent = '₱' + (peso1 * 1);
-      document.getElementById('sales5Value').textContent = '₱' + (peso5 * 5);
-      document.getElementById('sales10Value').textContent = '₱' + (peso10 * 10);
-      document.getElementById('sales1Percent').textContent = totalEarnings > 0 ? Math.round((peso1 * 1 / totalEarnings) * 100) + '%' : '0%';
-      document.getElementById('sales5Percent').textContent = totalEarnings > 0 ? Math.round((peso5 * 5 / totalEarnings) * 100) + '%' : '0%';
-      document.getElementById('sales10Percent').textContent = totalEarnings > 0 ? Math.round((peso10 * 10 / totalEarnings) * 100) + '%' : '0%';
-      document.getElementById('salesTotalCount').textContent = totalCoins;
-      document.getElementById('salesTotalValue').textContent = '₱' + totalEarnings;
-    }
+  if (password !== confirmPassword) {
+    alert('Passwords do not match');
+    return;
+  }
 
-    // Water level functions
-    function updateWaterLevel(value) {
-      waterLevel = parseInt(value, 10);
-      document.getElementById('sliderValue').textContent = waterLevel;
-      setWaterLevel(waterLevel);
-    }
+  firebase.auth().createUserWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+      user.sendEmailVerification();
 
-    function setWaterLevel(level) {
-      waterLevel = level;
-      const progressBar = document.getElementById('waterProgressBar');
-      const levelDisplay = document.getElementById('waterLevelDisplay');
-      const statusText = document.getElementById('waterStatusText');
-      const statusIcon = document.getElementById('waterStatusIcon');
-      const slider = document.getElementById('waterSlider');
-      const alertContainer = document.getElementById('waterAlert');
+      return firebase.database().ref('users/' + user.uid).set({
+        email: user.email,
+        createdAt: new Date().toISOString(),
+      });
+    })
+    .then(() => {
+      alert('✅ Account created successfully! Check your Gmail to verify your account.');
+      document.getElementById('registerForm').reset();
+      switchAuthTab('login');
+    })
+    .catch((error) => {
+      console.error(error);
+      alert(error.message);
+    });
+}
 
-      progressBar.style.width = level + '%';
-      progressBar.textContent = level + '%';
-      levelDisplay.textContent = level + '%';
-      if (slider) slider.value = level;
-      document.getElementById('sliderValue').textContent = level;
+function handleLogin(event) {
+  event.preventDefault();
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
 
-      let status, statusClass, iconName;
-      if (level > 30) {
-        status = 'normal'; statusClass = 'text-green'; iconName = 'check-circle';
-        progressBar.className = 'progress-bar';
-      } else if (level > 10) {
-        status = 'low'; statusClass = 'text-orange'; iconName = 'alert-triangle';
-        progressBar.className = 'progress-bar low';
-      } else {
-        status = 'empty'; statusClass = 'text-red'; iconName = 'alert-triangle';
-        progressBar.className = 'progress-bar empty';
+  firebase.auth().signInWithEmailAndPassword(email, password)
+    .then((userCredential) => {
+      const user = userCredential.user;
+
+      if (!user.emailVerified) {
+        firebase.auth().signOut();
+        alert('Please verify your Gmail before logging in.');
+        return;
       }
 
-      statusText.textContent = 'Status: ' + status;
-      statusText.className = statusClass;
-      levelDisplay.className = 'card-value ' + statusClass;
+      localStorage.setItem('currentUser', user.email);
+      showDashboard();
+    })
+    .catch((error) => {
+      console.error(error);
+      alert(error.message);
+    });
+}
+/* ------------------------------------------------------------------
+   Helper UI Functions
+------------------------------------------------------------------ */
+function switchAuthTab(tab) {
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+  document.getElementById(tab + 'Form').classList.add('active');
+  clearAuthMessages();
+  
+  lucide.createIcons();
+}
 
-      statusIcon.setAttribute('data-lucide', iconName);
-      statusIcon.className = statusClass;
-      lucide.createIcons();
+function showAuthError(elementId, message) {
+  const el = document.getElementById(elementId);
+  el.querySelector('span').textContent = message;
+  el.style.display = 'flex';
+  lucide.createIcons();
+}
+function showAuthSuccess(elementId, message) {
+  const el = document.getElementById(elementId);
+  el.querySelector('span').textContent = message;
+  el.style.display = 'flex';
+  lucide.createIcons();
+}
+function clearAuthMessages() {
+  document.querySelectorAll('.auth-error, .auth-success').forEach(el => el.style.display = 'none');
+}
 
-      if (status !== 'normal') {
-        const alertClass = status === 'low' ? 'alert-warning' : 'alert-danger';
-        const alertTitle = status === 'low' ? 'Low Water Level Warning' : 'Critical: Empty Tank';
-        const alertMessage = status === 'low'
-          ? 'Water level is below 30%. Consider refilling soon.'
-          : 'Tank is empty or critically low. Immediate attention required.';
+function showDashboard() {
+  document.getElementById('authContainer').classList.add('hidden');
+  document.getElementById('dashboardContainer').classList.add('visible');
+}
 
-        alertContainer.innerHTML = `
-          <div class="alert ${alertClass}">
-            <i data-lucide="alert-triangle"></i>
-            <div>
-              <h4 style="font-weight:500;margin-bottom:4px;">${alertTitle}</h4>
-              <p style="font-size:14px;">${alertMessage}</p>
-            </div>
-          </div>`;
-        lucide.createIcons();
-      } else {
-        alertContainer.innerHTML = '';
-      }
-    }
+/* ------------------------------------------------------------------
+   Logout
+------------------------------------------------------------------ */
+function logout() {
+  if (confirm('Are you sure you want to logout?')) {
+    firebase.auth().signOut();
+    currentUser = null;
+    localStorage.removeItem('currentUser');
+    document.getElementById('authContainer').classList.remove('hidden');
+    document.getElementById('dashboardContainer').classList.remove('visible');
+    document.querySelectorAll('.auth-form').forEach(f => f.reset());
+    clearAuthMessages();
+    switchAuthTab('login');
+    document.querySelector('.auth-tab').click();
+  }
+}
 
-    // Reset counters and history
+/* ------------------------------------------------------------------
+   Dashboard Logic (same as your original)
+------------------------------------------------------------------ */
+let peso1 = 0, peso5 = 0, peso10 = 0;
+let waterLevel = 85;
+
+function init() {
+  updateDisplay();
+  loadHistory();
+  setWaterLevel(waterLevel);
+}
+
+function simulateRandomInserts() {
+  if (currentUser && Math.random() > 0.92) {
+    peso1 += Math.floor(Math.random() * 2);
+    peso5 += Math.floor(Math.random() * 1);
+    updateDisplay();
+  }
+}
+
+function updateDisplay() {
+  const totalEarnings = peso1*1 + peso5*5 + peso10*10;
+  const totalCoins = peso1 + peso5 + peso10;
+
+  document.getElementById('peso1Display').textContent = peso1;
+  document.getElementById('peso5Display').textContent = peso5;
+  document.getElementById('peso10Display').textContent = peso10;
+  document.getElementById('peso1Total').textContent = peso1 * 1;
+  document.getElementById('peso5Total').textContent = peso5 * 5;
+  document.getElementById('peso10Total').textContent = peso10 * 10;
+  document.getElementById('totalEarningsDisplay').textContent = '₱' + totalEarnings;
+  document.getElementById('totalCoins').textContent = totalCoins;
+
+  document.getElementById('dailyTotal').textContent = '₱' + totalEarnings;
+  document.getElementById('weeklyTotal').textContent = '₱' + (totalEarnings * 7);
+  document.getElementById('monthlyTotal').textContent = '₱' + (totalEarnings * 30);
+
+  document.getElementById('sales1Count').textContent = peso1;
+  document.getElementById('sales5Count').textContent = peso5;
+  document.getElementById('sales10Count').textContent = peso10;
+  document.getElementById('sales1Value').textContent = '₱' + (peso1 * 1);
+  document.getElementById('sales5Value').textContent = '₱' + (peso5 * 5);
+  document.getElementById('sales10Value').textContent = '₱' + (peso10 * 10);
+  document.getElementById('sales1Percent').textContent = totalEarnings > 0 ? Math.round((peso1 * 1 / totalEarnings) * 100) + '%' : '0%';
+  document.getElementById('sales5Percent').textContent = totalEarnings > 0 ? Math.round((peso5 * 5 / totalEarnings) * 100) + '%' : '0%';
+  document.getElementById('sales10Percent').textContent = totalEarnings > 0 ? Math.round((peso10 * 10 / totalEarnings) * 100) + '%' : '0%';
+  document.getElementById('salesTotalCount').textContent = totalCoins;
+  document.getElementById('salesTotalValue').textContent = '₱' + totalEarnings;
+}
+
+/* ------------------------------------------------------------------
+   Water level and history (unchanged)
+------------------------------------------------------------------ */
+function setWaterLevel(level) {
+  waterLevel = level;
+  const progressBar = document.getElementById('waterProgressBar');
+  const levelDisplay = document.getElementById('waterLevelDisplay');
+  const statusText = document.getElementById('waterStatusText');
+  const statusIcon = document.getElementById('waterStatusIcon');
+  const alertContainer = document.getElementById('waterAlert');
+
+  progressBar.style.width = level + '%';
+  progressBar.textContent = level + '%';
+  levelDisplay.textContent = level + '%';
+
+  let status, statusClass, iconName;
+  if (level > 30) {
+    status = 'normal'; statusClass = 'text-green'; iconName = 'check-circle';
+    progressBar.className = 'progress-bar';
+  } else if (level > 10) {
+    status = 'low'; statusClass = 'text-orange'; iconName = 'alert-triangle';
+    progressBar.className = 'progress-bar low';
+  } else {
+    status = 'empty'; statusClass = 'text-red'; iconName = 'alert-triangle';
+    progressBar.className = 'progress-bar empty';
+  }
+  statusText.textContent = 'Status: ' + status;
+  statusText.className = statusClass;
+  levelDisplay.className = 'card-value ' + statusClass;
+  statusIcon.setAttribute('data-lucide', iconName);
+  statusIcon.className = statusClass;
+  lucide.createIcons();
+
+  if (status !== 'normal') {
+    const alertClass = status === 'low' ? 'alert-warning' : 'alert-danger';
+    const alertTitle = status === 'low' ? 'Low Water Level Warning' : 'Critical: Empty Tank';
+    const alertMessage = status === 'low'
+      ? 'Water level is below 30%. Consider refilling soon.'
+      : 'Tank is empty or critically low. Immediate attention required.';
+    alertContainer.innerHTML = `
+      <div class="alert ${alertClass}">
+        <i data-lucide="alert-triangle"></i>
+        <div>
+          <h4 style="font-weight:500;margin-bottom:4px;">${alertTitle}</h4>
+          <p style="font-size:14px;">${alertMessage}</p>
+        </div>
+      </div>`;
+    lucide.createIcons();
+  } else alertContainer.innerHTML = '';
+}
+
+function updateLastUpdated() {
+  if (currentUser) {
+    document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
+  }
+}
+
+/* ------------------------------------------------------------------
+   Section Navigation Logic
+------------------------------------------------------------------ */
+function showSection(sectionId, element) {
+  // Hide all sections
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+
+  // Show the selected section
+  const target = document.getElementById(sectionId);
+  if (target) {
+    target.classList.add('active');
+  }
+
+  // Update active sidebar highlight
+  document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+  if (element) element.classList.add('active');
+
+  // Close sidebar on mobile
+  closeSidebar?.();
+
+  // Re-render icons
+  lucide.createIcons();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.querySelector('.overlay').classList.toggle('active');
+}
+
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.querySelector('.overlay').classList.remove('active');
+}
+/* 🔧 Handle Forgot Password */
+function handleForgotPassword(event) {
+  event.preventDefault();
+
+  const email = document.getElementById('forgotEmail').value;
+
+  if (!email) {
+    alert("Please enter your Gmail address.");
+    return;
+  }
+
+  firebase.auth().sendPasswordResetEmail(email)
+    .then(() => {
+      alert(`Password reset email sent to ${email}. Please check your inbox.`);
+      document.getElementById('forgotForm').reset();
+      switchAuthTab('login'); // Go back to login tab after sending
+    })
+    .catch((error) => {
+      console.error("Error sending reset email:", error);
+      alert(error.message);
+    });
+
     function resetCounters() {
-      const totalEarnings = peso1*1 + peso5*5 + peso10*10;
-      if (totalEarnings > 0) {
-        if (confirm('Are you sure you want to reset all counters?')) {
-          let history = JSON.parse(localStorage.getItem('waterVendoHistory') || '[]');
-          history.push({ date: new Date().toLocaleString(), peso1, peso5, peso10, total: totalEarnings });
-          localStorage.setItem('waterVendoHistory', JSON.stringify(history));
-          peso1 = peso5 = peso10 = 0;
-          updateDisplay();
-          loadHistory();
-        }
-      } else {
-        alert('No earnings to reset.');
-      }
-    }
+  const totalEarnings = peso1 * 1 + peso5 * 5 + peso10 * 10;
 
-    function loadHistory() {
-      const history = JSON.parse(localStorage.getItem('waterVendoHistory') || '[]');
-      const emptyHistory = document.getElementById('emptyHistory');
-      const historyTable = document.getElementById('historyTable');
-      const historyTableBody = document.getElementById('historyTableBody');
+  if (totalEarnings <= 0) {
+    alert('No earnings to reset.');
+    return;
+  }
 
-      if (history.length > 0) {
-        emptyHistory.style.display = 'none';
-        historyTable.style.display = 'table';
-        historyTableBody.innerHTML = '';
-        history.forEach(entry => {
-          const row = document.createElement('tr');
-          row.innerHTML = `
-            <td><i data-lucide="calendar" style="width:16px;height:16px;color:#9ca3af;margin-right:8px;"></i>${entry.date}</td>
-            <td style="text-align:right;">${entry.peso1}</td>
-            <td style="text-align:right;">${entry.peso5}</td>
-            <td style="text-align:right;">${entry.peso10}</td>
-            <td style="text-align:right;color:#059669;font-weight:500;">₱${entry.total}</td>
-          `;
-          historyTableBody.appendChild(row);
-        });
-        lucide.createIcons();
-      } else {
-        emptyHistory.style.display = 'block';
-        historyTable.style.display = 'none';
-      }
-    }
+  if (!confirm('Are you sure you want to reset all counters?')) {
+    return;
+  }
 
-    function clearHistory() {
-      if (confirm('Are you sure you want to clear all history?')) {
-        localStorage.removeItem('waterVendoHistory');
-        loadHistory();
-      }
+  // Save to local history (same style as your previous logic)
+  try {
+    let history = JSON.parse(localStorage.getItem('waterVendoHistory') || '[]');
+    history.push({
+      date: new Date().toLocaleString(),
+      peso1,
+      peso5,
+      peso10,
+      total: totalEarnings
+    });
+    localStorage.setItem('waterVendoHistory', JSON.stringify(history));
+    if (typeof loadHistory === 'function') {
+      loadHistory();
     }
+  } catch (e) {
+    console.error('Error saving history:', e);
+  }
 
-    // Last updated
-    function updateLastUpdated() {
-      if (currentUser) {
-        document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
-      }
-    }
-  </script>
+  // 🔄 Reset values in Firebase so ESP32 + dashboard stay in sync
+  db.ref(`machines/${machineId}/coins`).set({
+    p1: 0,
+    p5: 0,
+    p10: 0
+  }).then(() => {
+    // Also reset local variables and UI
+    peso1 = 0;
+    peso5 = 0;
+    peso10 = 0;
+    updateDisplay();
+    alert('Counters have been reset.');
+  }).catch((error) => {
+    console.error('Failed to reset in Firebase:', error);
+    alert('Failed to reset in cloud: ' + error.message);
+  });
+}
+}
+</script>
+
 </body>
 </html>
