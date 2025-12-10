@@ -977,26 +977,23 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 // === LIVE DATA BINDINGS ===
-const machineId = 'vendo1';
+const machineId = 'vendo1';        // <-- set your machine id here
 const db = firebase.database();
 
-/* ------------------------------------------------------------------
-   Auth State Listener
------------------------------------------------------------------- */
 firebase.auth().onAuthStateChanged(user => {
-  if (user) {
-    // Show the app
+  if (user && user.emailVerified) {
+    // show the app
     document.getElementById('authContainer').classList.add('hidden');
     document.getElementById('dashboardContainer').classList.add('visible');
 
-    // Listen for water level (real-time)
-    db.ref(machines/${machineId}/waterLevel).on('value', snap => {
+    // Listen for water level
+    db.ref(`machines/${machineId}/waterLevel`).on('value', snap => {
       const level = snap.val() ?? 0;
       setWaterLevel(Number(level));
     });
 
     // Listen for coins: expect { p1, p5, p10 }
-    db.ref(machines/${machineId}/coins).on('value', snap => {
+    db.ref(`machines/${machineId}/coins`).on('value', snap => {
       const c = snap.val() || {};
       peso1 = Number(c.p1 || 0);
       peso5 = Number(c.p5 || 0);
@@ -1004,7 +1001,7 @@ firebase.auth().onAuthStateChanged(user => {
       updateDisplay();
     });
   } else {
-    // Show auth
+    // show auth
     document.getElementById('authContainer').classList.remove('hidden');
     document.getElementById('dashboardContainer').classList.remove('visible');
   }
@@ -1025,7 +1022,11 @@ document.addEventListener('DOMContentLoaded', function() {
   lucide.createIcons();
   init();
 
-  // Only keep last-updated clock
+  // ❌ REMOVE these simulation timers
+  // setInterval(simulateRandomInserts, 2000);
+  // setInterval(updateLastUpdated, 1000);
+
+  // ✅ Keep this — it updates the “Last updated” clock
   setInterval(updateLastUpdated, 1000);
 });
 
@@ -1078,7 +1079,12 @@ function handleLogin(event) {
     .then((userCredential) => {
       const user = userCredential.user;
 
-      // NO emailVerified check here so you can log in while testing
+      if (!user.emailVerified) {
+        firebase.auth().signOut();
+        alert('Please verify your Gmail before logging in.');
+        return;
+      }
+
       localStorage.setItem('currentUser', user.email);
       showDashboard();
     })
@@ -1087,7 +1093,6 @@ function handleLogin(event) {
       alert(error.message);
     });
 }
-
 /* ------------------------------------------------------------------
    Helper UI Functions
 ------------------------------------------------------------------ */
@@ -1097,6 +1102,7 @@ function switchAuthTab(tab) {
   document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
   document.getElementById(tab + 'Form').classList.add('active');
   clearAuthMessages();
+  
   lucide.createIcons();
 }
 
@@ -1106,18 +1112,14 @@ function showAuthError(elementId, message) {
   el.style.display = 'flex';
   lucide.createIcons();
 }
-
 function showAuthSuccess(elementId, message) {
   const el = document.getElementById(elementId);
   el.querySelector('span').textContent = message;
   el.style.display = 'flex';
   lucide.createIcons();
 }
-
 function clearAuthMessages() {
-  document.querySelectorAll('.auth-error, .auth-success').forEach(
-    el => el.style.display = 'none'
-  );
+  document.querySelectorAll('.auth-error, .auth-success').forEach(el => el.style.display = 'none');
 }
 
 function showDashboard() {
@@ -1143,7 +1145,7 @@ function logout() {
 }
 
 /* ------------------------------------------------------------------
-   Dashboard Logic
+   Dashboard Logic (same as your original)
 ------------------------------------------------------------------ */
 let peso1 = 0, peso5 = 0, peso10 = 0;
 let waterLevel = 85;
@@ -1167,7 +1169,7 @@ function getRangeTotal(days) {
   const history = JSON.parse(localStorage.getItem('waterVendoHistory') || '[]');
   const now = new Date();
   const from = new Date(now);
-  from.setDate(from.getDate() - (days - 1)); // last N days including today
+  from.setDate(from.getDate() - (days - 1)); // e.g. 7 days = last 7 including today
 
   let total = 0;
   history.forEach(h => {
@@ -1193,7 +1195,7 @@ function updateDisplay() {
   document.getElementById('totalEarningsDisplay').textContent = '₱' + todayEarnings;
   document.getElementById('totalCoins').textContent = totalCoins;
 
-  // Totals using saved history + current counters
+  // ---- REAL totals using saved history + current counters ----
   const dailyHistory   = getRangeTotal(1);
   const weeklyHistory  = getRangeTotal(7);
   const monthlyHistory = getRangeTotal(30);
@@ -1224,7 +1226,7 @@ function updateDisplay() {
 }
 
 /* ------------------------------------------------------------------
-   Water level and history
+   Water level and history (unchanged)
 ------------------------------------------------------------------ */
 function setWaterLevel(level) {
   waterLevel = level;
@@ -1271,15 +1273,12 @@ function setWaterLevel(level) {
         </div>
       </div>`;
     lucide.createIcons();
-  } else {
-    alertContainer.innerHTML = '';
-  }
+  } else alertContainer.innerHTML = '';
 }
 
 function updateLastUpdated() {
   if (currentUser) {
-    document.getElementById('lastUpdated').textContent =
-      'Last updated: ' + new Date().toLocaleTimeString();
+    document.getElementById('lastUpdated').textContent = 'Last updated: ' + new Date().toLocaleTimeString();
   }
 }
 
@@ -1287,15 +1286,23 @@ function updateLastUpdated() {
    Section Navigation Logic
 ------------------------------------------------------------------ */
 function showSection(sectionId, element) {
+  // Hide all sections
   document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
 
+  // Show the selected section
   const target = document.getElementById(sectionId);
-  if (target) target.classList.add('active');
+  if (target) {
+    target.classList.add('active');
+  }
 
+  // Update active sidebar highlight
   document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
   if (element) element.classList.add('active');
 
+  // Close sidebar on mobile
   closeSidebar?.();
+
+  // Re-render icons
   lucide.createIcons();
 }
 
@@ -1308,10 +1315,8 @@ function closeSidebar() {
   document.getElementById('sidebar').classList.remove('open');
   document.querySelector('.overlay').classList.remove('active');
 }
-
-/* ------------------------------------------------------------------
-   Forgot Password
------------------------------------------------------------------- */
+/* 🔧 Handle Forgot Password */
+/* 🔧 Handle Forgot Password */
 function handleForgotPassword(event) {
   event.preventDefault();
 
@@ -1324,9 +1329,9 @@ function handleForgotPassword(event) {
 
   firebase.auth().sendPasswordResetEmail(email)
     .then(() => {
-      alert(Password reset email sent to ${email}. Please check your inbox.);
+      alert(`Password reset email sent to ${email}. Please check your inbox.`);
       document.getElementById('forgotForm').reset();
-      switchAuthTab('login');
+      switchAuthTab('login'); // Go back to login tab after sending
     })
     .catch((error) => {
       console.error("Error sending reset email:", error);
@@ -1334,9 +1339,7 @@ function handleForgotPassword(event) {
     });
 }
 
-/* ------------------------------------------------------------------
-   Reset counters: save to history + reset Firebase + UI
------------------------------------------------------------------- */
+/* 🔄 Reset counters: save to history + reset Firebase + UI */
 function resetCounters() {
   const totalEarnings = peso1 * 1 + peso5 * 5 + peso10 * 10;
 
@@ -1361,11 +1364,12 @@ function resetCounters() {
   localStorage.setItem('waterVendoHistory', JSON.stringify(history));
 
   // Reset values in Firebase so ESP32 + dashboard stay in sync
-  db.ref(machines/${machineId}/coins).set({
+  db.ref(`machines/${machineId}/coins`).set({
     p1: 0,
     p5: 0,
     p10: 0
   }).then(() => {
+    // Reset local counters + UI
     peso1 = 0;
     peso5 = 0;
     peso10 = 0;
@@ -1378,9 +1382,7 @@ function resetCounters() {
   });
 }
 
-/* ------------------------------------------------------------------
-   Load history table from localStorage
------------------------------------------------------------------- */
+/* 📜 Load history table from localStorage */
 function loadHistory() {
   const history = JSON.parse(localStorage.getItem('waterVendoHistory') || '[]');
   const emptyHistory = document.getElementById('emptyHistory');
@@ -1401,11 +1403,7 @@ function loadHistory() {
     const row = document.createElement('tr');
     const niceDate = new Date(entry.date).toLocaleString();
     row.innerHTML = `
-      <td>
-        <i data-lucide="calendar"
-           style="width:16px;height:16px;color:#9ca3af;margin-right:8px;"></i>
-        ${niceDate}
-      </td>
+      <td><i data-lucide="calendar" style="width:16px;height:16px;color:#9ca3af;margin-right:8px;"></i>${niceDate}</td>
       <td style="text-align:right;">${entry.p1}</td>
       <td style="text-align:right;">${entry.p5}</td>
       <td style="text-align:right;">${entry.p10}</td>
@@ -1417,9 +1415,7 @@ function loadHistory() {
   lucide.createIcons();
 }
 
-/* ------------------------------------------------------------------
-   Clear history
------------------------------------------------------------------- */
+/* 🗑 Clear history */
 function clearHistory() {
   if (!confirm('Are you sure you want to clear all history?')) return;
   localStorage.removeItem('waterVendoHistory');
@@ -1427,9 +1423,7 @@ function clearHistory() {
   updateDisplay();
 }
 
-/* ------------------------------------------------------------------
-   Export history as CSV
------------------------------------------------------------------- */
+/* ⬇ Export history as CSV */
 function exportHistory() {
   const history = JSON.parse(localStorage.getItem('waterVendoHistory') || '[]');
 
@@ -1441,7 +1435,7 @@ function exportHistory() {
   let csv = 'Date,₱1 Coins,₱5 Coins,₱10 Coins,Total\n';
   history.forEach(h => {
     const niceDate = new Date(h.date).toLocaleString().replace(/"/g, '""');
-    csv += "${niceDate}",${h.p1},${h.p5},${h.p10},${h.total}\n;
+    csv += `"${niceDate}",${h.p1},${h.p5},${h.p10},${h.total}\n`;
   });
 
   const blob = new Blob([csv], { type: 'text/csv' });
@@ -1454,8 +1448,35 @@ function exportHistory() {
   a.remove();
   URL.revokeObjectURL(url);
 }
-</script>
 
+
+function exportHistory() {
+  const history = JSON.parse(localStorage.getItem('waterVendoHistory') || '[]');
+
+  if (!history.length) {
+    alert('No history to export yet.');
+    return;
+  }
+
+  let csv = 'Date,₱1 Coins,₱5 Coins,₱10 Coins,Total\n';
+  history.forEach(h => {
+    const niceDate = new Date(h.date).toLocaleString().replace(/"/g, '""');
+    csv += `"${niceDate}",${h.p1},${h.p5},${h.p10},${h.total}\n`;
+  });
+
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'water-vendo-history.csv';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+}
+
+</script>
 </body>
 </html>
+
 
